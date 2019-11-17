@@ -1,0 +1,77 @@
+{
+  "name": "meimei-ssr",
+  "dockerName": "urlservice",
+  "version": "1.1.11",
+  "description": "meimei-ssr",
+  "main": "./app/bin/www",
+  "scripts": {
+    "init": "make init",
+    "start": "make start NODE_ENV=base",
+    "eslint": "make eslint",
+    "format": "make pretty",
+    "test": "make test-uni",
+    "cov": "make test-cov",
+    "changelog": "make changelog",
+    "dev": "NODE_ENV=base npx nodemon -w ./app/ -e .js -V --quiet | bunyan",
+    "build": "make build",
+    "deploy": "make deploy"
+  },
+  "pre-commit": [
+    "eslint",
+    "format"
+  ],
+  "config": {
+    "commitizen": {
+      "path": "cz-customizable"
+    }
+  },
+  "dependencies": {
+    "@hapi/joi": "^15.0.3",
+    "@koa/cors": "^2.2.3",
+    "bunyan": "^1.8.12",
+    "cacheable-response": "^1.9.0",
+    "ejs": "^2.6.1",
+    "ioredis": "^4.14.1",
+    "koa": "^2.6.2",
+    "koa-body": "^4.1.1",
+    "koa-compose": "^4.1.0",
+    "koa-favicon": "^2.0.1",
+    "koa-router": "^7.4.0",
+    "koa-session2": "^2.2.10",
+    "koa-static": "^3.0.0",
+    "koa-views": "^6.2.0",
+    "shortid": "^2.2.14",
+    "swagger-jsdoc": "^3.2.6",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^7.2.1",
+    "@commitlint/config-conventional": "^7.1.2",
+    "benchmark": "^2.1.4",
+    "conventional-changelog": "^3.0.5",
+    "conventional-changelog-cli": "^2.0.11",
+    "debug": "^4.1.0",
+    "eslint": "^5.9.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-html": "^3.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "husky": "^1.2.0",
+    "mm": "^2.2.0",
+    "mocha": "^4.1.0",
+    "nodemon": "^1.18.7",
+    "nyc": "^11.9.0",
+    "prettier": "^1.15.2",
+    "should": "^13.2.1",
+    "supertest": "^3.1.0"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "engines": {
+    "node": ">= 10.15.0"
+  },
+  "license": "MIT"
+}
