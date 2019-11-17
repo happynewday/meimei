@@ -6,7 +6,7 @@ FROM registry.cn-hangzhou.aliyuncs.com/vivavideo/nodepm2:0.0.3
 LABEL MAINTAINER="hai.gao@quvideo.com"
 
 # 设置项目名称 没有特殊需求不用修改项目名称 因为 一个 Pod 运行一个 容器
-ARG PRONAME=url-service
+ARG PRONAME=meimei-server-node
 # 入口 js 根据自身项目修改
 # ARG STARTJS=index.js
 

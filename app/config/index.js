@@ -12,7 +12,7 @@ const APP_HOST = process.env.APP_HOST || '0.0.0.0';
 const { version, } = require('../../package.json');
 
 const env = process.env.NODE_ENV || 'development';
-const name = process.env.APP_NAME || 'url-service';
+const name = process.env.APP_NAME || 'meimei-server-node';
 
 const urlPrefixAPI = '/api/';
 

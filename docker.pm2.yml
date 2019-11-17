@@ -1,6 +1,6 @@
 apps:
   - script : ./app/bin/www
-    name   : 'url-service'
+    name   : 'meimei-server-node'
     instances: 2
     exec_mode: cluster
     min_uptime: '30s'
