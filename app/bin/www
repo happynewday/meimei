@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+const nodeEnv = process.env.NODE_ENV;
+const Log = console;
+
+start();
+/**
+ * 在没有抽象框架之前使用这个方式
+ */
+function start (defEnv) {
+  process.env.NODE_ENV = nodeEnv || defEnv || 'base';
+  const { app, onError, } = require('../');
+  const { port, host, env, } = require('../config');
+  const server = app.listen(port, host, () => {
+    Log.info({ event: 'execute', }, `API server listening on http://${host}:${port} , in ${env}`);
+  });
+  server.on('error', onError);
+}

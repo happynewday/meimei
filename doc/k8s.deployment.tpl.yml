@@ -1,0 +1,81 @@
+# deployment 模版文件
+# DOCKER_NAME DOCKER_TAG NODE_ENV APL_CLUSTER APL_APPID APL_URL APP_PORT APP_HOSTNAME
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+   labels:
+     app: {{DOCKER_NAME}}
+   name: {{DOCKER_NAME}}
+spec:
+   replicas: 1
+   strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+   selector:
+     matchLabels:
+       app: {{DOCKER_NAME}}
+   template:
+     metadata:
+       labels:
+         app: {{DOCKER_NAME}}
+     spec:
+       containers:
+       - image: registry.cn-hangzhou.aliyuncs.com/vivavideo/{{DOCKER_NAME}}:{{DOCKER_TAG}}
+       # always dev
+         imagePullPolicy: {{IMAGE_POLICY}}
+         name: {{DOCKER_NAME}}
+         resources:
+          limits:
+            cpu: '500m'
+            memory: '512Mi'
+          requests:
+            cpu: '250m'
+            memory: '128Mi'
+         env:
+         - name: NODE_ENV
+           value: {{NODE_ENV}}
+         - name: APL_CLUSTER
+           value: {{APL_CLUSTER}}
+         - name: APL_APPID
+           value: {{APL_APPID}}
+         - name: APL_URL
+           value: {{APL_URL}}    
+        #  - name: APP_HOST
+        #    value: {{APP_HOST}}
+         ports:
+         - containerPort: {{APP_PORT}}
+           protocol: TCP
+       imagePullSecrets: #Comment out to enable specific image pull secret
+       - name: myregistrykey      
+---
+apiVersion: v1
+kind: Service
+metadata:
+   labels:
+     app: {{DOCKER_NAME}}
+   name: {{DOCKER_NAME}}
+spec:
+   ports:
+   - port: {{APP_PORT}}
+     protocol: TCP
+     targetPort: {{APP_PORT}}
+   selector:
+     app: {{DOCKER_NAME}}
+   type: ClusterIP # or LoadBalancer
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+   name: {{DOCKER_NAME}}-test
+spec:
+   rules:
+   - host: '{{APP_HOSTNAME}}'
+     http:
+       paths:
+       - path: /
+         backend:
+           serviceName: {{DOCKER_NAME}}
+           servicePort: {{APP_PORT}}
+ 

@@ -1,0 +1,77 @@
+#!/usr/bin/env groovy
+// Declarative //
+
+def jobName = "${env.JOB_NAME}"
+def jobNum = "${env.BUILD_NUMBER}"
+def tag = params.VERSION
+def imageName = "oauth2servernode"
+// def appdir = "app/gateway"
+def serviceNameDEV = ""
+def serviceNameAUTO = ""
+def serviceNameQA = "base-oauth2-qa"
+def serviceNameXJP = "vcm-tool-monetize-xjp"
+def serviceName = "base-oauth2"
+def userInput = true
+def shortCommit = ""
+def uploadImage = true
+def jumperUser = "root"
+def jumperMachine = "101.132.242.82"
+def jumperPort = "22127"
+def dingTalk = 'https://oapi.dingtalk.com/robot/send?access_token=ec3d97341b256bdcc60c5ec90a47830b646ed37102010661b83842abae77df4f'
+// def dingTalk = 'https://oapi.dingtalk.com/robot/send?access_token=70fd58bfb648676e3b15f8b963fd3800a1b85146bc055be47e9c678e0c9a399a'
+// def autoTestUrl = 'http://vcm-automatetest-auto.api.xiaoying.co/automatetest/validate_deploy/?'
+def user = ""
+node{
+    stage("Deploy to QA?") {
+            try {
+                timeout(time: 1, unit: 'DAYS') { // change to a convenient timeout for you
+                    userInput = input(
+                    id: 'deploypre', message: 'Do you want to deploy to Hangzhou?', parameters: [
+                    [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'YES']
+                    ])
+                }
+            } catch(err) { // timeout reached or input false
+                userInput = false
+            }
+        }
+        stage('update QA'){
+            if (userInput == true) {
+                if (userInput == true) {
+                    wrap([$class: 'BuildUser']) {
+                        user = sh(returnStdout: true, script: 'echo "${BUILD_USER}"').trim()
+                    }
+                    def rs = sh(script: "/data/k8s-yaml/vcm-k8s-config/updatevivaservice.sh qa ${serviceName} ${imageName} ${tag} ${user}", returnStatus: true)
+                    echo "publish result: ${rs}"
+                    shortCommit = sh(returnStdout: true, script: "git rev-parse HEAD|cut -c1-8").trim()
+                 }
+            } else {
+                echo "abord deploy to HANGZHOU."
+            }
+        }
+    stage("Deploy to HangZhou?") {
+            try {
+                timeout(time: 1, unit: 'DAYS') { // change to a convenient timeout for you
+                    userInput = input(
+                    id: 'deploypre', message: 'Do you want to deploy to Hangzhou?', parameters: [
+                    [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'YES']
+                    ])
+                }
+            } catch(err) { // timeout reached or input false
+                userInput = false
+            }
+        }
+    stage('update HANGZHOU'){
+        if (userInput == true) {
+            if (userInput == true) {
+                wrap([$class: 'BuildUser']) {
+                    user = sh(returnStdout: true, script: 'echo "${BUILD_USER}"').trim()
+                }
+                def rs = sh(script: "/data/k8s-yaml/vcm-k8s-config/updatevivaservice.sh hz ${serviceName} ${imageName} ${tag} ${user}", returnStatus: true)
+                echo "publish result: ${rs}"
+                shortCommit = sh(returnStdout: true, script: "git rev-parse HEAD|cut -c1-8").trim()
+             }
+        } else {
+            echo "abord deploy to HANGZHOU."
+        }
+    }
+}
